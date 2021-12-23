@@ -90,10 +90,8 @@ class Client implements BTCPayerClient
       'amount' => $invoice['value'],
       'description' => $invoice['memo']
     ]);
-    echo json_encode($data);
-    if (is_array($data) && $data['r_hash']['type'] === "Buffer") {
-      $data['r_hash'] = bin2hex(join(array_map("chr", $data["r_hash"]["data"])));
-    }
+    $data['r_hash'] = $data['id'];
+    $data['payment_request'] = $data['BOLT11'];
     return $data;
   }
 
@@ -103,6 +101,9 @@ class Client implements BTCPayerClient
     $cryptoCode = $this->cryptoCode;
 
     $invoice = $this->request("GET", "stores/$storeId/lightning/$cryptoCode/invoices/$checkingId");
+    $invoice['r_hash'] = $invoice['id'];
+    $invoice['payment_request'] = $invoice['BOLT11'];
+
     $invoice['settled'] = $invoice['paidAt'] ? true : false; //kinda mimic lnd
     return $invoice;
   }
