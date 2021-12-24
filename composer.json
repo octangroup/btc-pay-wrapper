@@ -5,7 +5,8 @@
     "require": {
         "php": "^7.2",
         "guzzlehttp/guzzle": "^7.0",
-        "btcpayserver/btcpayserver-greenfield-php": "dev-master"
+        "btcpayserver/btcpayserver-greenfield-php": "dev-master",
+        "vlucas/phpdotenv": "5.4.x-dev"
     },
     "license": "MIT",
     "authors": [{

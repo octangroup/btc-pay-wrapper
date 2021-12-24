@@ -10,16 +10,17 @@ use \BTCPay\Contracts\BTCPayerClient;
 class Client implements BTCPayerClient
 {
 
-  protected $cryptoCode = '';
+  protected $cryptoCode = 'BTC';
   protected $host = '';
   protected $client;
   protected $storeId = '';
   protected $connected = false;
+  protected $apiKey = '';
 
-  public function __construct($host, $cryptoCode, $storeId)
+  public function __construct($host, $apiKey, $storeId)
   {
     $this->host = $host;
-    $this->cryptoCode = $cryptoCode;
+    $this->apiKey = $apiKey;
     $this->storeId = $storeId;
   }
 
@@ -29,6 +30,7 @@ class Client implements BTCPayerClient
       'Accept' => 'application/json',
       'Content-Type' => 'application/json',
       'Access-Control-Allow-Origin' => '*',
+      'Authorization' => 'token ' . $this->apiKey
     ];
 
     $requestBody = $body ? json_encode($body) : null;
@@ -49,17 +51,16 @@ class Client implements BTCPayerClient
 
   private function authorize()
   {
-    $cryptoCode = $this->cryptoCode;
-    $data = $this->request("GET", "server/lightning/$cryptoCode/connect");
+    $data = $this->request("GET", "api-keys/current");
+    $this->connected = true;
     return $data;
   }
 
   public function getInfo(): array
   {
-    $storeId = $this->storeId;
-    $cryptoCode = $this->cryptoCode;
-    $data = $this->request("GET", "stores/$storeId/lightning/$cryptoCode/info");
-    return $data;
+
+    $data = $this->request("GET", "server/info");
+    return  $data;
   }
 
   public function getBalance()
@@ -72,14 +73,14 @@ class Client implements BTCPayerClient
     if ($this->client) {
       return $this->client;
     }
-    $options = ['base_uri' => $this->url];
+    $options = ['base_uri' => $this->host];
     $this->client = new GuzzleHttp\Client($options);
     return $this->client;
   }
 
   public function isConnectionValid(): bool
   {
-    return !empty($this->access_token);
+    return !empty($this->connected);
   }
 
   public function addInvoice($invoice): array
@@ -88,7 +89,8 @@ class Client implements BTCPayerClient
     $cryptoCode = $this->cryptoCode;
     $data = $this->request("POST", "stores/$storeId/lightning/$cryptoCode/invoices", [
       'amount' => $invoice['value'],
-      'description' => $invoice['memo']
+      'description' => $invoice['memo'],
+      "expiry" => 90,
     ]);
     $data['r_hash'] = $data['id'];
     $data['payment_request'] = $data['BOLT11'];

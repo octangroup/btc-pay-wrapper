@@ -5,15 +5,32 @@ require_once 'vendor/autoload.php';
 
 use BTCPay\Client;
 use PHPUnit\Framework\TestCase;
+use Dotenv;
+
+
 
 final class EmailTest extends TestCase
 {
+    protected static $initialized = FALSE;
+
+    public function setUp()
+    {
+
+        parent::setUp();
+
+        if (!self::$initialized) {
+
+            $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 1));
+            $dotenv->safeLoad();
+
+            self::$initialized = TRUE;
+        }
+    }
+
     private function client(): Client
     {
-        $host = 'https://btcpay0.voltageapp.io';
-        $cryptoCode = 'bc55dbb023e9fe6562f7e8bf8292076b6bdf332d';
-        $storeId = 'AgC2GREtNAmSU8QVhaU87x8dgywHtRF1d1txGevJ3BPu';
-        return new Client($host, $cryptoCode, $storeId);
+
+        return new Client($_ENV['HOST'], $_ENV['API_KEY'], $_ENV['STORE_ID']);
     }
     public function testCanBeInitialized(): void
     {
@@ -42,7 +59,7 @@ final class EmailTest extends TestCase
     {
         $client = $this->client();
         $client->init();
-        $this->assertIsString($client->getInfo()['blockHeight']);
+        $this->assertIsArray($client->getInfo()['syncStatus']);
     }
 
     public function testCanAddInvoice(): void
