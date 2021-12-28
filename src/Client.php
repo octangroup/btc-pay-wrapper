@@ -16,6 +16,7 @@ class Client implements BTCPayerClient
   protected $storeId = '';
   protected $connected = false;
   protected $apiKey = '';
+  protected $invoiceExpiration = 600;
 
   public function __construct($host, $apiKey, $storeId)
   {
@@ -90,7 +91,7 @@ class Client implements BTCPayerClient
     $data = $this->request("POST", "stores/$storeId/lightning/$cryptoCode/invoices", [
       'amount' => $invoice['value'],
       'description' => $invoice['memo'],
-      "expiry" => 90,
+      "expiry" => $this->invoiceExpiration,
     ]);
     $data['r_hash'] = $data['id'];
     $data['payment_request'] = $data['BOLT11'];
