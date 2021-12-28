@@ -66,7 +66,7 @@ class Client implements BTCPayerClient
 
   public function getBalance()
   {
-    return 0;
+    return ['balance' => 0];
   }
 
   private function client()
