@@ -52,14 +52,14 @@ final class EmailTest extends TestCase
     {
         $client = $this->client();
         $client->init();
-        $this->assertIsNumeric($client->getBalance()['balance']);
+        $this->assertNull($client->getBalance()['balance']);
     }
 
     public function testCanGetInfo(): void
     {
         $client = $this->client();
         $client->init();
-        $this->assertIsArray($client->getInfo()['syncStatus']);
+        $this->assertIsString($client->getInfo()['alias']);
     }
 
     public function testCanAddInvoice(): void

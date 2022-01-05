@@ -61,7 +61,10 @@ class Client implements BTCPayerClient
   {
 
     $data = $this->request("GET", "server/info");
-    return  $data;
+    return [
+      'alias' => $data['version'],
+      'identity_pubkey' => $data['onion'],
+    ];
   }
 
   public function getBalance()
@@ -81,7 +84,7 @@ class Client implements BTCPayerClient
 
   public function isConnectionValid(): bool
   {
-    return !empty($this->connected);
+    return $this->connected;
   }
 
   public function addInvoice($invoice): array
