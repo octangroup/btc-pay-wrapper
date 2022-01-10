@@ -92,7 +92,7 @@ class Client implements BTCPayerClient
     $storeId = $this->storeId;
     $cryptoCode = $this->cryptoCode;
     $data = $this->request("POST", "stores/$storeId/lightning/$cryptoCode/invoices", [
-      'amount' => $invoice['value'],
+      'amount' => $invoice['value'] * 1000,
       'description' => $invoice['memo'],
       "expiry" => $this->invoiceExpiration,
     ]);
