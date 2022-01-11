@@ -91,8 +91,11 @@ class Client implements BTCPayerClient
   {
     $storeId = $this->storeId;
     $cryptoCode = $this->cryptoCode;
+    
+    // btc pay server expects the amount to be in mSats
+    $amount = ((int)$invoice['value']) * 1000;
     $data = $this->request("POST", "stores/$storeId/lightning/$cryptoCode/invoices", [
-      'amount' => $invoice['value'] * 1000,
+      'amount' => $amount,
       'description' => $invoice['memo'],
       "expiry" => $this->invoiceExpiration,
     ]);
