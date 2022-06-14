@@ -3,7 +3,7 @@
     "description": "A client for the BTCPay API",
     "type": "library",
     "require": {
-        "php": "^7.2",
+        "php": "^8.0",
         "guzzlehttp/guzzle": "^7.0",
         "btcpayserver/btcpayserver-greenfield-php": "dev-master",
         "vlucas/phpdotenv": "5.4.x-dev"
